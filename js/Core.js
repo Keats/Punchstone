@@ -10,6 +10,7 @@
       scene = new sceneClass();
       loader = new P.Loader(scene);
       couldntLoad = loader._load();
+      P.scene = scene;
       window.requestAnimFrame = (function() {
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
           return window.setTimeout(callback, 1000 / 60);
@@ -17,7 +18,7 @@
       })();
       if (!couldntLoad) {
         P.canvas.clear();
-        return scene.run();
+        return P.scene.run();
       } else {
         console.log(couldntLoad);
         return console.log('oops');

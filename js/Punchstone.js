@@ -12,9 +12,10 @@
     P = exports;
   } else {
     P = original_P = {};
+    P.components = {};
+    P.systems = {};
     P.my = {};
     P.Artemis = root.Artemis;
-    P.soundManager = root.soundManager;
     root.P = P;
   }
 

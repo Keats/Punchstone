@@ -16,8 +16,9 @@
       this.scene = scene;
       this.totalToLoad = this.scene.assets.sounds.length + this.scene.assets.images.length;
       this.loaded = 0;
-      this.images = {};
-      this.sounds = {};
+      this.scene.loadedAssets = {};
+      this.scene.loadedAssets.images = {};
+      this.scene.loadedAssets.sounds = {};
       P.Util.addEventHandling(this);
       this.on("loaded", this._eventFileLoaded);
     }
@@ -36,8 +37,8 @@
         extension = file.substr(file.lastIndexOf(".") + 1).toLowerCase();
         name = file.substr(file.lastIndexOf("/") + 1).toLowerCase();
         if (__indexOf.call(_imagesExtensions, extension) >= 0) {
-          if (!this.images[name]) {
-            this.images[name] = this._loadImage(file);
+          if (!this.scene.loadedAssets.images[name]) {
+            this.scene.loadedAssets.images[name] = this._loadImage(file);
             this.fire("loaded");
           } else {
             couldntLoad.push(file);
@@ -48,9 +49,9 @@
       for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
         file = _ref1[_j];
         name = file.substr(file.lastIndexOf("/") + 1).toLowerCase();
-        if (!this.sounds[name]) {
+        if (!this.scene.loadedAssets.sounds[name]) {
           file = file + "." + P.detect.preferedAudioFormat;
-          this.sounds[name] = this._loadSound(file);
+          this.scene.loadedAssets.sounds[name] = this._loadSound(file);
           this.fire("loaded");
         } else {
           couldntLoad.push(file);

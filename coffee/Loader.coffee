@@ -19,9 +19,10 @@ class Loader
     
     @loaded = 0
 
-    #store assets as objects with index being the filename
-    @images = {}
-    @sounds = {}
+    #store assets as objects with index being the filename in the scene
+    @scene.loadedAssets = {}
+    @scene.loadedAssets.images = {}
+    @scene.loadedAssets.sounds = {}
 
     #Adds support for events
     P.Util.addEventHandling @
@@ -45,8 +46,8 @@ class Loader
 
       if extension in _imagesExtensions
         #Load image if it's not already loaded
-        if not @images[name]
-          @images[name] = @_loadImage file
+        if not @scene.loadedAssets.images[name]
+          @scene.loadedAssets.images[name] = @_loadImage file
           @.fire "loaded"
         else 
           couldntLoad.push file
@@ -55,10 +56,10 @@ class Loader
     for file in @scene.assets.sounds      
       name = file.substr(file.lastIndexOf("/") + 1).toLowerCase()
 
-      if not @sounds[name]
+      if not @scene.loadedAssets.sounds[name]
         #We detected which one we should use between mp3 and ogg
         file = file + "." + P.detect.preferedAudioFormat
-        @sounds[name] = @_loadSound file
+        @scene.loadedAssets.sounds[name] = @_loadSound file
         @.fire "loaded"
       else
         #Oups can't play this, fallback to something else

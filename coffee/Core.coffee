@@ -14,7 +14,8 @@ Core =
     loader = new P.Loader scene
     couldntLoad = loader._load()
 
-
+    P.scene = scene
+    
     #TODO : create a static class doing all the shims/setup of plugins
     #shim for requestAnimationFrame
     window.requestAnimFrame = (->
@@ -36,7 +37,7 @@ Core =
     if not couldntLoad
       #start the game
       P.canvas.clear()
-      scene.run()
+      P.scene.run()
     else
       #display an error
       console.log couldntLoad
