@@ -10,7 +10,6 @@
       scene = new sceneClass();
       loader = new P.Loader(scene);
       couldntLoad = loader._load();
-      loader.sounds["song"].play();
       window.requestAnimFrame = (function() {
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
           return window.setTimeout(callback, 1000 / 60);

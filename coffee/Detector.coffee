@@ -2,7 +2,7 @@
 P.Detector = {}
 
 
-#Gets the user agent, os etc
+#Gets the user agent, os etc and stores them so the user can do tests against them
 class Detector
 
   constructor: () ->
@@ -88,20 +88,15 @@ class Detector
         subString: "MSIE"
 
     #opera stores some functions in window
-    if window.opera
-      return "opera"
+    if window.opera then @opera = true
 
     for key of browsers
       if navigator.userAgent.indexOf(browsers[key].subString) isnt -1
         @desktop = true
-        if key is "chrome"
-          @chrome = true
-        else if key is "firefox"
-          @firefox = true
-        else if key is "safari"
-          @safari = true
-        else if key is "ie"
-          @ie = true
+        if key is "chrome" then @chrome = true
+        else if key is "firefox" then @firefox = true
+        else if key is "safari" then @safari = true
+        else if key is "ie" then @ie = true
 
 
   #Detects if if the client is on a mobile platform
@@ -116,22 +111,14 @@ class Detector
       "winphone":
         subString: "Windows Phone"
 
-    found = false
-
     for key of platforms
       if navigator.userAgent.indexOf(platforms[key].subString) isnt -1
         @mobile = true
-        console.log key
-        if key is "iphone"
-          @iPhone = true
-          @iOS = true
-        else if key is "ipad"
-          @iPad = true
-          @iOS = true
-        else if key is "android"
-          @android = true
-        else if key is "winphone"
-          @winphone = true
+
+        if key is "iphone" then @iPhone = true and @iOS = true
+        else if key is "ipad" then @iPad = true and @iOS = true
+        else if key is "android" then @android = true
+        else if key is "winphone" then @winphone = true
 
 
   detectOS: () ->
@@ -145,12 +132,9 @@ class Detector
 
     for key of os
       if navigator.userAgent.indexOf(os[key].subString) isnt -1
-        if key is "windows"
-          @windows = true
-        else if key is "mac"
-          @mac = true
-        else if key is "linux"
-          @linux = true
+        if key is "windows" then @windows = true
+        else if key is "mac" then @mac = true
+        else if key is "linux" then @linux = true
 
 
   detectWebWorker: () ->

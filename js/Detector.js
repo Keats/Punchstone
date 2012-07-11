@@ -70,7 +70,7 @@
         }
       };
       if (window.opera) {
-        return "opera";
+        this.opera = true;
       }
       _results = [];
       for (key in browsers) {
@@ -95,7 +95,7 @@
     };
 
     Detector.prototype.detectMobile = function() {
-      var found, key, platforms, _results;
+      var key, platforms, _results;
       platforms = {
         "iphone": {
           subString: "iPhone"
@@ -110,18 +110,14 @@
           subString: "Windows Phone"
         }
       };
-      found = false;
       _results = [];
       for (key in platforms) {
         if (navigator.userAgent.indexOf(platforms[key].subString) !== -1) {
           this.mobile = true;
-          console.log(key);
           if (key === "iphone") {
-            this.iPhone = true;
-            _results.push(this.iOS = true);
+            _results.push(this.iPhone = true && (this.iOS = true));
           } else if (key === "ipad") {
-            this.iPad = true;
-            _results.push(this.iOS = true);
+            _results.push(this.iPad = true && (this.iOS = true));
           } else if (key === "android") {
             _results.push(this.android = true);
           } else if (key === "winphone") {

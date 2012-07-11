@@ -14,9 +14,6 @@ Core =
     loader = new P.Loader scene
     couldntLoad = loader._load()
 
-   
-
-    loader.sounds["song"].play()
 
     #TODO : create a static class doing all the shims/setup of plugins
     #shim for requestAnimationFrame
