@@ -10,6 +10,12 @@
       destination.off = P.Events.removeEventListener;
       destination.fire = P.Events.fireEvent;
       return destination.hasEventListeners = P.Events.hasEventListeners;
+    },
+    randomInRange: function(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+    round: function(number) {
+      return (0.5 + number) << 0;
     }
   };
 

@@ -3,15 +3,24 @@
   var Core;
 
   Core = {
-    start: function(canvasId, width, height, gameClass) {
-      var couldntLoad, game, loader;
+    start: function(canvasId, width, height, sceneClass) {
+      var couldntLoad, loader, scene;
       P.canvas = new P.Canvas(canvasId, width, height);
-      game = new gameClass();
-      loader = new P.Loader(game);
+      P.detect = new P.Detector();
+      scene = new sceneClass();
+      loader = new P.Loader(scene);
       couldntLoad = loader._load();
+      loader.sounds["song"].play();
+      window.requestAnimFrame = (function() {
+        return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
+          return window.setTimeout(callback, 1000 / 60);
+        };
+      })();
       if (!couldntLoad) {
-        return game.run();
+        P.canvas.clear();
+        return scene.run();
       } else {
+        console.log(couldntLoad);
         return console.log('oops');
       }
     }

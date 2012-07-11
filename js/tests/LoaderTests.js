@@ -2,16 +2,20 @@
 (function() {
 
   describe("Loader", function() {
+    P.canvas = null;
+    before(function() {
+      return P.canvas = new P.Canvas("canvas", 0, 0);
+    });
     describe("Loading valid sounds", function() {
       var data, loader;
       data = ["assets/sounds/kill1.mp3", "assets/sounds/song.mp3", "assets/sounds/test.mp3"];
       loader = null;
       before(function() {
-        var game;
-        game = {
+        var scene;
+        scene = {
           assets: data
         };
-        loader = new P.Loader(game);
+        loader = new P.Loader(scene);
         return loader._load();
       });
       it("should have loaded 3 sounds", function() {
@@ -27,11 +31,11 @@
       loader = null;
       couldntLoad = null;
       before(function() {
-        var game;
-        game = {
+        var scene;
+        scene = {
           assets: data
         };
-        loader = new P.Loader(game);
+        loader = new P.Loader(scene);
         return couldntLoad = loader._load();
       });
       it("should have loaded 2 sounds", function() {
@@ -46,11 +50,11 @@
       data = ["assets/images/tileset.png"];
       loader = null;
       before(function() {
-        var couldntLoad, game;
-        game = {
+        var couldntLoad, scene;
+        scene = {
           assets: data
         };
-        loader = new P.Loader(game);
+        loader = new P.Loader(scene);
         return couldntLoad = loader._load();
       });
       return it("should have loaded 1 image", function() {
@@ -63,11 +67,11 @@
       loader = null;
       couldntLoad = null;
       before(function() {
-        var game;
-        game = {
+        var scene;
+        scene = {
           assets: data
         };
-        loader = new P.Loader(game);
+        loader = new P.Loader(scene);
         return couldntLoad = loader._load();
       });
       it("should have loaded 1 image", function() {
@@ -83,11 +87,11 @@
       loader = null;
       couldntLoad = null;
       before(function() {
-        var game;
-        game = {
+        var scene;
+        scene = {
           assets: data
         };
-        loader = new P.Loader(game);
+        loader = new P.Loader(scene);
         return couldntLoad = loader._load();
       });
       it("should have loaded 1 image", function() {
@@ -106,11 +110,11 @@
       loader = null;
       couldntLoad = null;
       before(function() {
-        var game;
-        game = {
+        var scene;
+        scene = {
           assets: data
         };
-        loader = new P.Loader(game);
+        loader = new P.Loader(scene);
         return couldntLoad = loader._load();
       });
       it("should not have loaded any assets", function() {
@@ -126,11 +130,11 @@
       loader = null;
       couldntLoad = null;
       before(function() {
-        var game;
-        game = {
+        var scene;
+        scene = {
           assets: data
         };
-        loader = new P.Loader(game);
+        loader = new P.Loader(scene);
         return couldntLoad = loader._load();
       });
       it("should have an instance of Audio", function() {

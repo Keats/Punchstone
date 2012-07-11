@@ -21,8 +21,8 @@
 
     Canvas.prototype.drawRandomCircle = function() {
       var x, y;
-      x = Math.floor(Math.random() * (this.element.width - 0 + 1)) + 0;
-      y = Math.floor(Math.random() * (this.element.height - 0 + 1)) + 0;
+      x = P.Util.randomInRange(0, this.element.width);
+      y = P.Util.randomInRange(0, this.element.height);
       this.context.beginPath();
       this.context.arc(x, y, 10, 0, 2 * Math.PI, false);
       this.context.fillStyle = "rgb(255, 0, 0)";

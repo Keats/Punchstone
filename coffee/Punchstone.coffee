@@ -11,6 +11,10 @@ else
   P = original_P = {}
   #Using that to store everything not from the game engine
   P.my = {}
+  #Storing libs in the P namespace to avoid confusion
+  P.Artemis = root.Artemis
+  P.soundManager = root.soundManager
+  
   root.P = P
 
 

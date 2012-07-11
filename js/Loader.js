@@ -6,47 +6,31 @@
   P.Loader = {};
 
   Loader = (function() {
-    var _canPlay, _imagesExtensions, _soundsExtensions;
+    var _canPlay, _imagesExtensions;
 
     _imagesExtensions = ['png', 'jpeg', 'jpg'];
 
-    _soundsExtensions = ['ogg', 'mp3'];
-
     _canPlay = [];
 
-    function Loader(game) {
-      this.game = game;
-      this.totalToLoad = this.game.assets.length;
+    function Loader(scene) {
+      this.scene = scene;
+      this.totalToLoad = this.scene.assets.sounds.length + this.scene.assets.images.length;
       this.loaded = 0;
       this.images = {};
       this.sounds = {};
       P.Util.addEventHandling(this);
-      this.on("loaded", this.eventFileLoaded);
+      this.on("loaded", this._eventFileLoaded);
     }
 
-    Loader.prototype._detectAudioFormat = function() {
-      var userAudio;
-      userAudio = document.createElement('audio');
-      if (!!userAudio.canPlayType) {
-        if ("" !== userAudio.canPlayType('audio/mpeg;')) {
-          _canPlay.push("mp3");
-        }
-        if ("" !== userAudio.canPlayType('audio/ogg;')) {
-          return _canPlay.push("ogg");
-        }
-      }
-    };
-
-    Loader.prototype.eventFileLoaded = function() {
+    Loader.prototype._eventFileLoaded = function() {
       this.loaded++;
       return this.draw();
     };
 
     Loader.prototype._load = function() {
-      var couldntLoad, extension, file, name, _i, _len, _ref;
-      this._detectAudioFormat();
+      var couldntLoad, extension, file, name, _i, _j, _len, _len1, _ref, _ref1;
       couldntLoad = [];
-      _ref = this.game.assets;
+      _ref = this.scene.assets.images;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         file = _ref[_i];
         extension = file.substr(file.lastIndexOf(".") + 1).toLowerCase();
@@ -55,14 +39,19 @@
           if (!this.images[name]) {
             this.images[name] = this._loadImage(file);
             this.fire("loaded");
-          }
-        } else if (__indexOf.call(_soundsExtensions, extension) >= 0) {
-          if (__indexOf.call(_canPlay, extension) >= 0 && !this.sounds[name]) {
-            this.sounds[name] = this._loadSound(file);
-            this.fire("loaded");
           } else {
             couldntLoad.push(file);
           }
+        }
+      }
+      _ref1 = this.scene.assets.sounds;
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        file = _ref1[_j];
+        name = file.substr(file.lastIndexOf("/") + 1).toLowerCase();
+        if (!this.sounds[name]) {
+          file = file + "." + P.detect.preferedAudioFormat;
+          this.sounds[name] = this._loadSound(file);
+          this.fire("loaded");
         } else {
           couldntLoad.push(file);
         }

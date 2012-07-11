@@ -1,16 +1,21 @@
 
 describe "Loader", ->
 
+  P.canvas = null
+
+  before () ->
+    P.canvas = new P.Canvas "canvas", 0, 0
+
   describe "Loading valid sounds", ->
 
     data = ["assets/sounds/kill1.mp3", "assets/sounds/song.mp3", "assets/sounds/test.mp3"]
     loader = null
 
     before () ->
-      game = 
+      scene = 
         assets: data
-
-      loader = new P.Loader game
+        
+      loader = new P.Loader scene
       loader._load()
 
     it "should have loaded 3 sounds", ->
@@ -26,9 +31,10 @@ describe "Loader", ->
     couldntLoad = null
 
     before () ->
-      game = 
+      scene = 
         assets: data
-      loader = new P.Loader game
+
+      loader = new P.Loader scene
       couldntLoad = loader._load()
 
     it "should have loaded 2 sounds", ->
@@ -43,10 +49,10 @@ describe "Loader", ->
     loader = null
 
     before () ->
-      game = 
+      scene = 
         assets: data
 
-      loader = new P.Loader game
+      loader = new P.Loader scene
       couldntLoad = loader._load()
 
     it "should have loaded 1 image", ->
@@ -60,10 +66,10 @@ describe "Loader", ->
     couldntLoad = null
 
     before () ->
-      game = 
+      scene = 
         assets: data
 
-      loader = new P.Loader game
+      loader = new P.Loader scene
       couldntLoad = loader._load()
 
     it "should have loaded 1 image", ->
@@ -79,10 +85,10 @@ describe "Loader", ->
     couldntLoad = null
 
     before () ->
-      game = 
+      scene = 
         assets: data
 
-      loader = new P.Loader game
+      loader = new P.Loader scene
       couldntLoad = loader._load()
 
     it "should have loaded 1 image", ->
@@ -100,10 +106,10 @@ describe "Loader", ->
     couldntLoad = null
 
     before () ->
-      game = 
+      scene = 
         assets: data
 
-      loader = new P.Loader game
+      loader = new P.Loader scene
       couldntLoad = loader._load()
 
     it "should not have loaded any assets", ->
@@ -119,10 +125,10 @@ describe "Loader", ->
     couldntLoad = null
 
     before () ->
-      game = 
+      scene = 
         assets: data
 
-      loader = new P.Loader game
+      loader = new P.Loader scene
       couldntLoad = loader._load()
       
     it "should have an instance of Audio", ->

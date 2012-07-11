@@ -1,28 +1,31 @@
 
-P.Game = {}
+P.Scene = {}
 
 
 #Creates entities/components/systems here
 #Update/Draw loops are here too
 #Should be extended
-class Game
+class Scene
 
   #Used to initalize the game
   #bind inputs, load level etc
   constructor: () ->
 
 
-  run: () ->
-    @update()
-    @draw()
-
-
   #process systems
   update: () ->
+    
 
 
   #process systems that renders
   draw: () ->
 
 
-P.Game = Game
+  run: =>
+    requestAnimFrame @run 
+    @update()
+    @draw()
+    #setInterval(@run, 1)
+
+
+P.Scene = Scene

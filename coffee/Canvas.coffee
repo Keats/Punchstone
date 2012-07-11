@@ -19,11 +19,13 @@ class Canvas
 
 
   drawRandomCircle: () ->
-    x = Math.floor(Math.random() * (@element.width - 0 + 1)) + 0
-    y = Math.floor(Math.random() * (@element.height - 0 + 1)) + 0
+    x = P.Util.randomInRange 0, @element.width
+    y = P.Util.randomInRange 0, @element.height
+
     @context.beginPath()
     @context.arc(x, y, 10, 0, 2 * Math.PI, false)
     @context.fillStyle = "rgb(255, 0, 0)"
     @context.fill()
+
 
 P.Canvas = Canvas
