@@ -6,16 +6,15 @@
   P.Loader = {};
 
   Loader = (function() {
-    var _canPlay, _imagesExtensions;
+    var _imagesExtensions;
 
     _imagesExtensions = ['png', 'jpeg', 'jpg'];
-
-    _canPlay = [];
 
     function Loader(scene) {
       this.scene = scene;
       this.totalToLoad = this.scene.assets.sounds.length + this.scene.assets.images.length;
       this.loaded = 0;
+      this.finished = false;
       this.scene.loadedAssets = {};
       this.scene.loadedAssets.images = {};
       this.scene.loadedAssets.sounds = {};
@@ -25,36 +24,42 @@
 
     Loader.prototype._eventFileLoaded = function() {
       this.loaded++;
-      return this.draw();
+      this.draw();
+      if (this.loaded === this.totalToLoad) {
+        return this.finished = true;
+      }
     };
 
     Loader.prototype._load = function() {
-      var couldntLoad, extension, file, name, _i, _j, _len, _len1, _ref, _ref1;
+      var audio, audioName, couldntLoad, extension, image, imageName, _i, _j, _len, _len1, _ref, _ref1,
+        _this = this;
       couldntLoad = [];
       _ref = this.scene.assets.images;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        file = _ref[_i];
-        extension = file.substr(file.lastIndexOf(".") + 1).toLowerCase();
-        name = file.substr(file.lastIndexOf("/") + 1).toLowerCase();
+        image = _ref[_i];
+        extension = image.substr(image.lastIndexOf(".") + 1).toLowerCase();
+        imageName = image.substr(image.lastIndexOf("/") + 1).toLowerCase();
         if (__indexOf.call(_imagesExtensions, extension) >= 0) {
-          if (!this.scene.loadedAssets.images[name]) {
-            this.scene.loadedAssets.images[name] = this._loadImage(file);
-            this.fire("loaded");
+          if (!this.scene.loadedAssets.images[imageName]) {
+            this._loadImage(image, imageName, function(image, name) {
+              _this.scene.loadedAssets.images[name] = image;
+              return _this.fire("loaded");
+            });
           } else {
-            couldntLoad.push(file);
+            couldntLoad.push(image);
           }
         }
       }
       _ref1 = this.scene.assets.sounds;
       for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-        file = _ref1[_j];
-        name = file.substr(file.lastIndexOf("/") + 1).toLowerCase();
-        if (!this.scene.loadedAssets.sounds[name]) {
-          file = file + "." + P.detect.preferedAudioFormat;
-          this.scene.loadedAssets.sounds[name] = this._loadSound(file);
+        audio = _ref1[_j];
+        audioName = audio.substr(audio.lastIndexOf("/") + 1).toLowerCase();
+        if (!this.scene.loadedAssets.sounds[audioName]) {
+          audio = audio + "." + P.detect.preferedAudioFormat;
+          this.scene.loadedAssets.sounds[audioName] = this._loadSound(audio);
           this.fire("loaded");
         } else {
-          couldntLoad.push(file);
+          couldntLoad.push(audio);
         }
       }
       if (couldntLoad.length > 0) {
@@ -71,11 +76,13 @@
       return sound;
     };
 
-    Loader.prototype._loadImage = function(file) {
+    Loader.prototype._loadImage = function(file, name, callback) {
       var image;
       image = new Image();
       image.src = file;
-      return image;
+      return image.onload = function() {
+        return callback(image, name);
+      };
     };
 
     Loader.prototype.draw = function() {

@@ -17,6 +17,7 @@ class Detector
     @winphone = false
 
     @desktop = false
+    #TODO : Not used for now, to delete maybe later
     @chrome = false
     @firefox = false
     @ie = false

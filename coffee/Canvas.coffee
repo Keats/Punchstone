@@ -28,4 +28,12 @@ class Canvas
     @context.fill()
 
 
+  #Display only FPS for now
+  displayStats: () ->
+    @context.fillStyle = "Black"
+    @context.font = "normal 14pt Arial"
+    @context.fillText(P.scene.fps + " fps", 10, 26);
+
+
+
 P.Canvas = Canvas

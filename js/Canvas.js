@@ -29,6 +29,12 @@
       return this.context.fill();
     };
 
+    Canvas.prototype.displayStats = function() {
+      this.context.fillStyle = "Black";
+      this.context.font = "normal 14pt Arial";
+      return this.context.fillText(P.scene.fps + " fps", 10, 26);
+    };
+
     return Canvas;
 
   })();

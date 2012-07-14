@@ -9,7 +9,10 @@
 
     function Scene() {
       this.run = __bind(this.run, this);
-
+      this.fps = 0;
+      this.displayStats = false;
+      this.lastRun = null;
+      this.world = new P.Artemis.EntityWorld();
     }
 
     Scene.prototype.update = function() {};
@@ -17,9 +20,21 @@
     Scene.prototype.draw = function() {};
 
     Scene.prototype.run = function() {
-      requestAnimFrame(this.run);
+      if (!this.lastRun) {
+        this.lastRun = new Date().getTime();
+        requestAnimFrame(this.run);
+        return;
+      }
+      this.world.delta = (new Date().getTime() - this.lastRun) / 1000;
+      this.lastRun = new Date().getTime();
+      this.fps = P.Util.round(1 / this.world.delta);
+      P.canvas.clear();
       this.update();
-      return this.draw();
+      this.draw();
+      if (this.displayStats) {
+        P.canvas.displayStats();
+      }
+      return requestAnimFrame(this.run);
     };
 
     return Scene;
