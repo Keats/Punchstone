@@ -12,7 +12,6 @@
 
     function SpriteRenderSystem() {
       SpriteRenderSystem.__super__.constructor.call(this, "Sprite", "Position");
-      this.spritesheets = {};
     }
 
     SpriteRenderSystem.prototype.initialize = function() {
@@ -21,71 +20,36 @@
     };
 
     SpriteRenderSystem.prototype.processEntity = function(entity) {
-      var position, sprite;
+      var position, sprite, tile;
       position = this.positionMapper.get(entity);
       sprite = this.spriteMapper.get(entity);
-      if (!(sprite.spritesheetName in this.spritesheets)) {
-        this.normalizeSpritesheet(sprite);
-      }
-      if (sprite.currentAnim) {
-        if (sprite._timeSinceLastUpdate >= sprite.animations[sprite.currentAnim].frameTime) {
-          if (this.isNextFrameInAnimation(sprite)) {
-            sprite._currentFrame++;
-          } else {
-            sprite._currentFrame = 0;
-          }
+      if (sprite._currentAnimation) {
+        if (sprite._timeSinceLastUpdate >= sprite._currentAnimation.frameTime) {
+          tile = this.nextFrame(sprite);
           sprite._timeSinceLastUpdate = 0;
         } else {
+          tile = sprite._currentAnimation.frames[sprite._currentFrame];
           sprite._timeSinceLastUpdate += this.world.delta;
         }
+        return this.draw(position, sprite, tile);
       } else {
-        sprite.currentAnim = "idle";
+        return sprite._currentAnimation = sprite.animations["idle"];
       }
-      return this.draw(sprite, position);
     };
 
-    SpriteRenderSystem.prototype.normalizeSpritesheet = function(sprite) {
-      var image, numberOfColumns, numberOfRows;
+    SpriteRenderSystem.prototype.nextFrame = function(sprite) {
+      var tile;
+      sprite._currentFrame = (sprite._currentFrame + 1) % sprite._currentAnimation.frames.length;
+      tile = sprite._currentAnimation.frames[sprite._currentFrame];
+      return tile;
+    };
+
+    SpriteRenderSystem.prototype.draw = function(position, sprite, tile) {
+      var image, startingX, startingY;
+      startingX = (tile % sprite.numberTilesPerRow) * sprite.width;
+      startingY = Math.floor(tile / sprite.numberTilesPerRow) * sprite.height;
       image = P.scene.loadedAssets.images[sprite.spritesheetName];
-      numberOfColumns = image.width / sprite.spritesheetSizeX;
-      numberOfRows = image.height / sprite.spritesheetSizeY;
-      return this.spritesheets[sprite.spritesheetName] = {
-        width: image.width,
-        height: image.height,
-        rows: numberOfRows,
-        columns: numberOfColumns
-      };
-    };
-
-    SpriteRenderSystem.prototype.isNextFrameInAnimation = function(sprite) {
-      var inAnim, _ref;
-      inAnim = false;
-      if ((sprite.animations[sprite.currentAnim].start <= (_ref = sprite._currentFrame + 1) && _ref <= sprite.animations[sprite.currentAnim].end)) {
-        inAnim = true;
-      }
-      return inAnim;
-    };
-
-    SpriteRenderSystem.prototype.draw = function(sprite, position) {
-      var column, frame, image, row, spritesheet;
-      image = P.scene.loadedAssets.images[sprite.spritesheetName];
-      spritesheet = this.spritesheets[sprite.spritesheetName];
-      row = 0;
-      column = 0;
-      frame = 0;
-      while (row !== spritesheet.rows) {
-        while (column !== (spritesheet.columns - 1)) {
-          if (frame === sprite._currentFrame) {
-            break;
-          } else {
-            frame++;
-          }
-          column++;
-        }
-        row++;
-      }
-      row--;
-      return P.canvas.context.drawImage(image, column * 64, row * 64, 64, 64, position.x, position.y, 64, 64);
+      return P.canvas.context.drawImage(image, startingX, startingY, sprite.width, sprite.height, position.x, position.y, sprite.width, sprite.height);
     };
 
     return SpriteRenderSystem;

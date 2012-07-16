@@ -10,22 +10,21 @@
 
     __extends(Sprite, _super);
 
-    function Sprite(spritesheetName, spritesheetSizeX, spritesheetSizeY) {
+    function Sprite(spritesheetName, width, height, numberTilesPerRow) {
       this.spritesheetName = spritesheetName;
-      this.spritesheetSizeX = spritesheetSizeX;
-      this.spritesheetSizeY = spritesheetSizeY;
+      this.width = width;
+      this.height = height;
+      this.numberTilesPerRow = numberTilesPerRow;
       this.animations = {};
-      this.currentAnim = "";
+      this._currentAnimation = "";
       this._currentFrame = 0;
       this._timeSinceLastUpdate = 0;
     }
 
-    Sprite.prototype.addAnimation = function(name, frameTime, startFrame, endFrame) {
+    Sprite.prototype.addAnimation = function(name, frameTime, frames) {
       return this.animations[name] = {
         frameTime: frameTime,
-        start: startFrame,
-        end: endFrame,
-        length: endFrame - startFrame
+        frames: frames
       };
     };
 

@@ -7,9 +7,6 @@ class SpriteRenderSystem extends P.Artemis.EntityProcessingSystem
   constructor: () ->
     super "Sprite", "Position"
 
-    #We store some info on the animations so we don't have to do the calculations again
-    @spritesheets = {}
-
 
   initialize: () ->
     @positionMapper = new P.Artemis.ComponentMapper "Position", @world
@@ -21,84 +18,44 @@ class SpriteRenderSystem extends P.Artemis.EntityProcessingSystem
     position = @positionMapper.get entity
     sprite = @spriteMapper.get entity
 
-    if sprite.spritesheetName not of @spritesheets
-      @normalizeSpritesheet sprite
-
     #If there's an animation going on right now
-    if sprite.currentAnim
+    if sprite._currentAnimation
       #If we need to change frame
-      if sprite._timeSinceLastUpdate >= (sprite.animations[sprite.currentAnim].frameTime)
-        #Should we go back to the beginning or not
-        if @isNextFrameInAnimation sprite          
-          sprite._currentFrame++
-        else
-          sprite._currentFrame = 0
+      if sprite._timeSinceLastUpdate >= sprite._currentAnimation.frameTime
+        tile = @nextFrame sprite
 
         sprite._timeSinceLastUpdate = 0
-        
 
       else
+        tile = sprite._currentAnimation.frames[sprite._currentFrame]
         sprite._timeSinceLastUpdate += @world.delta
 
+      #TODO : optimize this (dirty rectangles) so we only draw if needed
+      @draw position, sprite, tile
+
     else
-      sprite.currentAnim = "idle"
+      sprite._currentAnimation = sprite.animations["idle"]
 
-    #TODO : rendered even if there are no changes in the anim, that sucks
-    @draw(sprite, position)
+
+  #Gets the next frame or rewinds if it was the last one
+  nextFrame: (sprite) ->
+    sprite._currentFrame = (sprite._currentFrame + 1) % sprite._currentAnimation.frames.length
+    tile = sprite._currentAnimation.frames[sprite._currentFrame]
     
+    tile
 
 
-  #Calculates infos on the sprite such as size, number of rows/columns
-  normalizeSpritesheet: (sprite) ->
+  #Draw the tile of the spritesheet at the position given
+  draw: (position, sprite, tile) ->
+    #P.canvas.context.clearRect position.x, position.y, sprite.width, sprite.height
+
+    startingX = (tile % sprite.numberTilesPerRow) * sprite.width
+    startingY = Math.floor(tile / sprite.numberTilesPerRow) * sprite.height
     image = P.scene.loadedAssets.images[sprite.spritesheetName]
 
-    numberOfColumns = image.width / sprite.spritesheetSizeX
-    numberOfRows = image.height / sprite.spritesheetSizeY
+    P.canvas.context.drawImage(image, startingX, startingY, sprite.width, sprite.height, 
+      position.x, position.y, sprite.width, sprite.height)
 
-    @spritesheets[sprite.spritesheetName] =
-      width: image.width
-      height: image.height
-      rows: numberOfRows
-      columns: numberOfColumns
-
-
-  #Checks whether the next frame is in the animation or if it should restart from the beginning
-  isNextFrameInAnimation: (sprite) ->
-    inAnim = false
-
-    #Is the next frame in anim ?
-    if sprite.animations[sprite.currentAnim].start <= sprite._currentFrame + 1 <= sprite.animations[sprite.currentAnim].end
-      inAnim = true
-
-    inAnim
-
-
-  #Draws the sprite to the canvas
-  draw: (sprite, position) ->
-    image = P.scene.loadedAssets.images[sprite.spritesheetName]
-    spritesheet = @spritesheets[sprite.spritesheetName]
-
-    row = 0
-    column = 0
-    frame = 0
-
-    until row is spritesheet.rows
-      until column is (spritesheet.columns - 1)
-        if frame is sprite._currentFrame
-          break
-        else
-          frame++
-
-        column++
-
-      row++
-
-    #Ugly but otherwise go up to 1 even if there's only 1 line
-    row--
-
-
-    P.canvas.context.drawImage(image, column*64, row*64, 64, 64, 
-      position.x, position.y, 64, 64);
 
 
 P.systems.SpriteRenderSystem = SpriteRenderSystem

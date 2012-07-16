@@ -21,7 +21,7 @@ class Canvas
   drawRandomCircle: () ->
     x = P.Util.randomInRange 0, @element.width
     y = P.Util.randomInRange 0, @element.height
-
+    
     @context.beginPath()
     @context.arc(x, y, 10, 0, 2 * Math.PI, false)
     @context.fillStyle = "rgb(255, 0, 0)"
