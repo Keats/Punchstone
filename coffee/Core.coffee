@@ -24,6 +24,8 @@ Core =
     
     #Object controling the canvas element
     P.canvas = new P.Canvas canvasId, width, height
+    
+    P.input = new P.Input()
 
     #Detecting all the clients info
     P.detect = new P.Detector()

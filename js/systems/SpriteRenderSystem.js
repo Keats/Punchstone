@@ -23,24 +23,33 @@
       var position, sprite, tile;
       position = this.positionMapper.get(entity);
       sprite = this.spriteMapper.get(entity);
-      if (sprite._currentAnimation) {
-        if (sprite._timeSinceLastUpdate >= sprite._currentAnimation.frameTime) {
-          tile = this.nextFrame(sprite);
-          sprite._timeSinceLastUpdate = 0;
+      if (sprite.currentAnimation) {
+        if (sprite._automatic) {
+          if (sprite._timeSinceLastUpdate >= sprite.currentAnimation.frameTime) {
+            tile = this.nextFrame(sprite);
+            sprite._timeSinceLastUpdate = 0;
+          } else {
+            tile = sprite.currentAnimation.frames[sprite._currentFrame];
+            sprite._timeSinceLastUpdate += this.world.delta;
+          }
         } else {
-          tile = sprite._currentAnimation.frames[sprite._currentFrame];
-          sprite._timeSinceLastUpdate += this.world.delta;
+          if (sprite._nextFrame && sprite._timeSinceLastUpdate >= sprite.currentAnimation.frameTime) {
+            tile = this.nextFrame(sprite);
+            sprite._timeSinceLastUpdate = 0;
+            sprite._nextFrame = false;
+          } else {
+            tile = sprite.currentAnimation.frames[sprite._currentFrame];
+            sprite._timeSinceLastUpdate += this.world.delta;
+          }
         }
         return this.draw(position, sprite, tile);
-      } else {
-        return sprite._currentAnimation = sprite.animations["idle"];
       }
     };
 
     SpriteRenderSystem.prototype.nextFrame = function(sprite) {
       var tile;
-      sprite._currentFrame = (sprite._currentFrame + 1) % sprite._currentAnimation.frames.length;
-      tile = sprite._currentAnimation.frames[sprite._currentFrame];
+      sprite._currentFrame = (sprite._currentFrame + 1) % sprite.currentAnimation.frames.length;
+      tile = sprite.currentAnimation.frames[sprite._currentFrame];
       return tile;
     };
 

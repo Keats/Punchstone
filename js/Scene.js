@@ -15,9 +15,14 @@
       this.world = new P.Artemis.EntityWorld();
     }
 
-    Scene.prototype.update = function() {};
+    Scene.prototype.update = function() {
+      this.world.loopStart();
+      return this.world.systemManager.updateSynchronous("update");
+    };
 
-    Scene.prototype.draw = function() {};
+    Scene.prototype.draw = function() {
+      return this.world.systemManager.updateSynchronous("draw");
+    };
 
     Scene.prototype.run = function() {
       if (!this.lastRun) {
@@ -31,6 +36,7 @@
       P.canvas.clear();
       this.update();
       this.draw();
+      P.input.clearInput();
       if (this.displayStats) {
         P.canvas.displayStats();
       }

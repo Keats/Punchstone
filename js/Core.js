@@ -11,6 +11,7 @@
         };
       })();
       P.canvas = new P.Canvas(canvasId, width, height);
+      P.input = new P.Input();
       P.detect = new P.Detector();
       scene = new sceneClass();
       loader = new P.Loader(scene);

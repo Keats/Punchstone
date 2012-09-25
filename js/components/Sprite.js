@@ -16,9 +16,11 @@
       this.height = height;
       this.numberTilesPerRow = numberTilesPerRow;
       this.animations = {};
-      this._currentAnimation = "";
+      this.currentAnimation = "";
       this._currentFrame = 0;
       this._timeSinceLastUpdate = 0;
+      this.flipped = false;
+      this._nextFrame = false;
     }
 
     Sprite.prototype.addAnimation = function(name, frameTime, frames) {
@@ -26,6 +28,20 @@
         frameTime: frameTime,
         frames: frames
       };
+    };
+
+    Sprite.prototype.play = function(name, automatic) {
+      if (automatic == null) {
+        automatic = false;
+      }
+      if (this.currentAnimation !== this.animations[name]) {
+        this.currentAnimation = this.animations[name];
+        this._currentFrame = 0;
+        this._timeSinceLastUpdate = 0;
+        this.flipped = false;
+        this._automatic = automatic;
+      }
+      return this._nextFrame = true;
     };
 
     return Sprite;
